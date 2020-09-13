@@ -2,8 +2,8 @@
  * David Russell
  * bigint
  * CS 23001
+ * This program allows a user to input an int that is larger than a signed int.
 */
-//This program allows a user to input an int that is larger than a signed int.
 
 #include "bigint.hpp"
 
@@ -39,19 +39,20 @@ bigint::bigint (const char arr[]) {
 			foundNull = true;
 			bigIntArr[i] = 0;
 		}
-		if ( arr[i] != '\0' && !foundNull) {
+		if (arr[i] != '\0' && !foundNull) {
 			++countOfChars;
 		}
 	}
 
 	//Makes the char array keep the same order as ints.
 	for (int i = 0, j = countOfChars -1; i < countOfChars; ++i, --j) {
-		bigIntArr[i] = (int)(arr[j]) - 48; // Subtracts the int value of arr from 48 which is ASCII of 0;
+		bigIntArr[i] = (int)(arr[j]) - 48;
+		// Subtracts the int value of arr from 48 which is ASCII of 0;
 	}
 
 }
 
-//METHODS
+// METHODS
 bool bigint::operator== (const bigint& rhs) const {
 	bool isEqual = true;
 
