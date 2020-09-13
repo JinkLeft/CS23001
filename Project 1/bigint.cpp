@@ -65,6 +65,37 @@ bool bigint::operator== (const bigint& rhs) const {
 	return isEqual;
 }
 
+bigint bigint::operator+ (const bigint& rhs) const {
+	int oneCarry = 0;
+	int tempValue = 0;
+	bigint newBigInt;
+
+	for (int i = 0; i < CAPACITY; ++i) {
+		if (tempValue >= 0 && oneCarry == 0) {
+			tempValue = bigIntArr[i] + rhs.bigIntArr[i];
+			newBigInt.bigIntArr[i] = tempValue % 10;
+
+			if( tempValue >= 10) {
+				oneCarry = 1;
+			}
+		} else if (tempValue == 0 && oneCarry == 1) {
+			tempValue = bigIntArr[i] + rhs.bigIntArr[i] + oneCarry;
+
+			if (tempValue >= 10) {
+				newBigInt.bigIntArr[i] = tempValue % 10;
+				oneCarry = 1;
+			} else {
+				newBigInt.bigIntArr[i] = tempValue;
+				oneCarry = 0;
+			}
+ 		}
+
+		tempValue = 0;	// Reset temp value
+	}
+
+	return newBigInt;
+}
+
 //debugging of big int, outputs the int to the stream.
 void bigint::debugPrint(std::ostream& out) const {
 	for (int i = CAPACITY - 1; i >= 0; --i){
@@ -105,3 +136,27 @@ std::ostream& operator << (std::ostream& out, bigint b) {
 
 	return out;
 }
+
+/*
+int main() {
+	bigint b1("123450");
+	bigint b2("123451");
+	bigint b3;
+
+	b3 = b1 + b2;
+
+	std::cout << "\nPrinting b1:" << std::endl;
+	b1.debugPrint(std::cout);
+
+
+	std::cout << "\nPrinting b2:" << std::endl;
+	b2.debugPrint(std::cout);
+
+
+	std::cout << "\nPrinting addition result:" << std::endl;
+	b3.debugPrint(std::cout);
+
+
+	return 0;
+}
+*/
