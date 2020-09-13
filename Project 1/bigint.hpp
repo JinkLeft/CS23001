@@ -20,6 +20,7 @@ public:
 	bigint(const char arr[]);	// Initializes the array to a char value
 
 	bool operator== (const bigint& numbers) const;	// Compares two big int numbers and returns bool
+	bigint operator+ (const bigint&) const;		// Adds two bigints together and returns bigint
 
 	void debugPrint(std::ostream&) const;		// Prints elements of array starting from High end
 	friend std::ostream& operator << (std::ostream& out, bigint b);	 //Writes bigint to stream
