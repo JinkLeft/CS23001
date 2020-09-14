@@ -15,7 +15,6 @@ bigint::bigint () {
 };
 
 bigint::bigint (int userNum) {
-
 	int i = 0;
 
 	while(i < CAPACITY) {
@@ -30,24 +29,22 @@ bigint::bigint (int userNum) {
 };
 
 bigint::bigint (const char arr[]) {
-	bool foundNull = false; 
+	bool foundNull = false;
 	int countOfChars = 0;
 
 	//Counts the Characters of the array, and sets the null and remaining indexes to 0
 	for (int i = 0; i < CAPACITY; ++i) {
-		if (arr[i] == '\0' || foundNull) {
-			foundNull = true;
-			bigIntArr[i] = 0;
-		}
-		if (arr[i] != '\0' && !foundNull) {
-			++countOfChars;
-		}
+		bigIntArr[i] = 0;
+		if (arr[i] == '\0' || foundNull) { foundNull = true; }
+		if (arr[i] != '\0' && !foundNull) { ++countOfChars; }
 	}
 
 	//Makes the char array keep the same order as ints.
 	for (int i = 0, j = countOfChars -1; i < countOfChars; ++i, --j) {
-		bigIntArr[i] = (int)(arr[j]) - 48;
-		// Subtracts the int value of arr from 48 which is ASCII of 0;
+		if(arr[j] != ' ' && arr[j] != ';' && arr[j] != '\n') {
+			bigIntArr[i] = (int)(arr[j]) - 48;
+			// Subtracts the int value of arr from 48 which is ASCII of 0;
+		}
 	}
 
 }
@@ -75,9 +72,7 @@ bigint bigint::operator+ (const bigint& rhs) const {
 			tempValue = bigIntArr[i] + rhs.bigIntArr[i];
 			newBigInt.bigIntArr[i] = tempValue % 10;
 
-			if( tempValue >= 10) {
-				oneCarry = 1;
-			}
+			if( tempValue >= 10) { oneCarry = 1;}
 		} else if (tempValue == 0 && oneCarry == 1) {
 			tempValue = bigIntArr[i] + rhs.bigIntArr[i] + oneCarry;
 
@@ -96,6 +91,10 @@ bigint bigint::operator+ (const bigint& rhs) const {
 	return newBigInt;
 }
 
+int bigint::operator[] (const int i) const {
+	return bigIntArr[i];
+}
+
 //debugging of big int, outputs the int to the stream.
 void bigint::debugPrint(std::ostream& out) const {
 	for (int i = CAPACITY - 1; i >= 0; --i){
@@ -110,7 +109,7 @@ void bigint::debugPrint(std::ostream& out) const {
 
 
 //Takes a stream and bigint and outputs that int to the stream and returns the stream.
-std::ostream& operator << (std::ostream& out, bigint b) {
+std::ostream& operator << (std::ostream& out,const bigint& b) {
 	bool detectedNumbers = false;
 	const int maxLineSize = 80;
 	int currentLineSize = 0;
@@ -137,26 +136,28 @@ std::ostream& operator << (std::ostream& out, bigint b) {
 	return out;
 }
 
-/*
-int main() {
-	bigint b1("123450");
-	bigint b2("123451");
-	bigint b3;
+std::istream& operator>> (std::istream& in, bigint& b) {
+	char str[CAPACITY];
+	bool foundNull = false;
+	int countOfChars = 0;
 
-	b3 = b1 + b2;
+	in.getline(str, CAPACITY, ';');
 
-	std::cout << "\nPrinting b1:" << std::endl;
-	b1.debugPrint(std::cout);
+	//Counts the Characters of the array, and sets the null and remaining indexes to 0
+	for (int i = 0; i < CAPACITY; ++i) {
+		if (str[i] == '\0' || foundNull) {
+			foundNull = true;
+			b.bigIntArr[i] = 0;
+		}
 
+		if (str[i] != '\0' && !foundNull) { ++countOfChars; }
+	}
 
-	std::cout << "\nPrinting b2:" << std::endl;
-	b2.debugPrint(std::cout);
+	//Makes the char array keep the same order as ints.
+	for (int i = 0, j = countOfChars -1; i < countOfChars; ++i, --j) {
+		b.bigIntArr[i] = (int)(str[j]) - 48;
+		// Subtracts the int value of arr from 48 which is ASCII of 0;
+	}
 
-
-	std::cout << "\nPrinting addition result:" << std::endl;
-	b3.debugPrint(std::cout);
-
-
-	return 0;
+	return in;
 }
-*/
