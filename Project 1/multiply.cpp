@@ -7,25 +7,25 @@
 #include "bigint.hpp"
 
 int main() {
-    std::ifstream in("data1-1.txt");    // Define stream for input
+    std::ifstream in("data1-2.txt");    // Define stream for input
     if(!in) {                           // Make sure it opened correctly.
-        std::cerr << "Could not open data1-1.txt, exiting." << std::endl;
+        std::cerr << "Could not open data1-2.txt, exiting." << std::endl;
         exit(1);
     }
 
-	char firstWord[CAPACITY];
-	char secondWord[CAPACITY];
+	char firstInt[CAPACITY];
+	char secondInt[CAPACITY];
 
 	while(!in.eof()) {
-		if(in.getline(firstWord, CAPACITY, ';') && in.getline(secondWord, CAPACITY, ';')){
+		if(in.getline(firstInt, CAPACITY, ';') && in.getline(secondInt, CAPACITY, ';')){
 
-			bigint b1(firstWord);
-			bigint b2(secondWord);
+			bigint b1(firstInt);
+			bigint b2(secondInt);
 
-			bigint b3 = (b1 + b2);
+			bigint b3 = (b1 * b2);
 
 			std::cout << "\n  " << b1 << std::endl;
-			std::cout << "+ " << b2 << std::endl;
+			std::cout << "* " << b2 << std::endl;
 			std::cout << "= " << b3 << std::endl;
 		}
 	}

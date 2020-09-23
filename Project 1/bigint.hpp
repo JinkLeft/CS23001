@@ -26,9 +26,15 @@ public:
 	// Adds two bigints together and returns bigint
 	int operator[] (const int i) const;
 	// Return the i-th digit, where i is the 10^i pos
+	bigint operator* (const bigint b) const;
+	//multiply a bigint by a bigint
 
 	void debugPrint(std::ostream&) const;
 	// Prints elements of array starting from High end
+	bigint timesDigit(int) const;
+	//Multiply a bigint and a single digit integer between 0-9.
+	bigint times10(int) const;
+	//multiply a bigint by 10^n with n > 0
 	friend std::ostream& operator<< (std::ostream& out,const bigint& b);
 	//Writes bigint to stream
 	friend std::istream& operator>> (std::istream& in, bigint& b);

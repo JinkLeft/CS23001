@@ -41,7 +41,7 @@ bigint::bigint (const char arr[]) {
 
 	//Makes the char array keep the same order as ints.
 	for (int i = 0, j = countOfChars -1; i < countOfChars; ++i, --j) {
-		if(arr[j] != ' ' && arr[j] != ';' && arr[j] != '\n') {
+		if(arr[j] != ' ' && arr[j] != ';' && arr[j] != '\n' && arr[j] != '\r') {
 			bigIntArr[i] = (int)(arr[j]) - 48;
 			// Subtracts the int value of arr from 48 which is ASCII of 0;
 		}
@@ -95,6 +95,16 @@ int bigint::operator[] (const int i) const {
 	return bigIntArr[i];
 }
 
+bigint bigint::operator* (const bigint rhs) const {
+	bigint product;
+
+	for(int i = 0; i < CAPACITY; ++i) {
+		product = product +(timesDigit(rhs.bigIntArr[i])).times10(i);
+	}
+
+	return product;
+}
+
 //debugging of big int, outputs the int to the stream.
 void bigint::debugPrint(std::ostream& out) const {
 	for (int i = CAPACITY - 1; i >= 0; --i){
@@ -107,6 +117,45 @@ void bigint::debugPrint(std::ostream& out) const {
 	out << std::endl;
 }
 
+bigint bigint::timesDigit(int number) const{
+	bigint temp;
+	int tempValue = 0;
+	int digitCarry = 0;
+
+	for (int i = 0; i < CAPACITY; ++i) {
+		if (tempValue >= 0 && digitCarry == 0) {
+			tempValue = bigIntArr[i] * number;
+
+			temp.bigIntArr[i] = tempValue % 10;
+
+			if (tempValue >= 10) {  digitCarry = tempValue / 10;}
+
+		} else if (tempValue == 0 && digitCarry > 0) {
+			tempValue = bigIntArr[i] * number + digitCarry;
+
+			temp.bigIntArr[i] = tempValue % 10;
+
+			digitCarry = tempValue / 10;
+		}
+
+		tempValue = 0; //reset temp
+	}
+
+	return temp;
+}
+
+bigint bigint::times10(int shift) const {
+	bigint temp;
+	int endIndex = CAPACITY - 1;
+
+	for (int i = endIndex; i >= 0; --i) {
+		if( i <= endIndex - shift) {
+			temp.bigIntArr[i + shift] = bigIntArr[i];
+		}
+	}
+
+	return temp;
+}
 
 //Takes a stream and bigint and outputs that int to the stream and returns the stream.
 std::ostream& operator << (std::ostream& out,const bigint& b) {

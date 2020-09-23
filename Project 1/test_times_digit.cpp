@@ -16,14 +16,58 @@ int main () {
         bigint bi(3);
 
         // Test 
-        bi = bi.times_digit(1);
+        bi = bi.timesDigit(4);
 
         // Verify
-        assert(bi == 12);  //Will FAIL, fix and add test cases.
+        assert(bi == 12);  
+    }
+    {
+        //------------------------------------------------------
+        // Setup fixture
+        bigint bi(3);
+
+        // Test 
+        bi = bi.timesDigit(10);
+
+        // Verify
+        assert(bi == 30);  
+    }
+    {
+        //------------------------------------------------------
+        // Setup fixture
+        bigint bi(3);
+
+        // Test 
+        bi = bi.timesDigit(100);
+
+        // Verify
+        assert(bi == 300);  
+    }
+    {
+        //------------------------------------------------------
+        // Setup fixture
+        bigint bi(3);
+
+        // Test 
+        bi = bi.timesDigit(1000);
+
+        // Verify
+        assert(bi == 3000);  
+    }
+    {
+        //------------------------------------------------------
+        // Setup fixture
+        bigint bi(3);
+
+        // Test 
+        bi = bi.timesDigit(100000);
+
+        // Verify
+        assert(bi == 300000);  
     }
 
 
     //Add test cases as needed.
     
     std::cout << "Done testing bigint * digit" << std::endl;
-
+}
