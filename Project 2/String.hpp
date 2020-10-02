@@ -11,7 +11,7 @@
 //
 // You will either have use this interface or call your methods through this interface.
 //
-// You need to implement all of the methods and funcitons declared here.
+// You need to implement all of the methods and functions declared here.
 //
 
 #ifndef CS23001_STRING_INTERFACE_HPP
@@ -27,34 +27,39 @@ const int STRING_SIZE = 256;                      //The size of the String.
 //              capacity() == STRING_SIZE - 1
 //
 class String {
-public:
-            String        ();                     //Empty string
-            String        (char);                 //Stirng('x')
-            String        (const char[]);         //String("abcd")
-    char&   operator[]    (int);                  //Accessor/Modifier
-    char    operator[]    (int)            const; //Accessor
-    int     capacity      ()               const; //Max chars that can be stored (not including null terminator)
-    int     length        ()               const; //Number of char in string
-    String  operator+     (const String&)  const; //Concatenation
-    bool    operator==    (const String&)  const;
-    bool    operator<     (const String&)  const;
-
-    friend  std::istream& operator>>(std::istream&, String&);
-    friend  std::ostream& operator<<(std::ostream&, const String&);
-
 private:
-    char str[STRING_SIZE];
+    char str[STRING_SIZE];                          //STRING_SIZE is CONST
+
+public:
+    String();                                       //Empty string
+	String(const char);                             //String('x')
+    String(const char[]);                           //String("abcd")
+	
+    int capacity() const;                           //String.capacity() returns STRING_SIZE - 1
+    int length() const;                             //String.length() returns length of String
+    String substr(int start, int end) const;
+    int findChar(int start, char c);
+    char& operator[] (int);                         //Accessor/Modifier
+    char operator[] (int) const;                    //Accessor
+    String operator+ (const String&) const;         //Concatenation
+    bool operator== (const String&) const;
+    bool operator< (const String&) const;
+    bool operator<= (const String&) const;
+
+    friend std::istream& operator>>(std::istream&, String&);
+    friend std::ostream& operator<<(std::ostream&, const String&);
 };
 
-String  operator+       (const char[],  const String&);
-String  operator+       (char,          const String&);
-bool    operator==      (const char[],  const String&);
-bool    operator==      (char,          const String&);
-bool    operator<       (const char[],  const String&);
-bool    operator<       (char,          const String&);
-bool    operator<=      (const String&, const String&);
-bool    operator!=      (const String&, const String&);
-bool    operator>=      (const String&, const String&);
-bool    operator>       (const String&, const String&);
+String operator+ (const char[], const String&);
+String operator+ (char, const String&);
+String operator+= (const char[], const String&);
+String operator+= (char, const String&);
+bool operator== (const char[], const String&);
+bool operator== (char, const String&);
+bool operator< (const char[], const String&);
+bool operator< (char, const String&);
+bool operator!= (const String&, const String&);
+bool operator>= (const String&, const String&);
+bool operator> (const String&, const String&);
 
 #endif
