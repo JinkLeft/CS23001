@@ -1,0 +1,2 @@
+dog cat animal
+word 1234 second random

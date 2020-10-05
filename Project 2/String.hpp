@@ -37,23 +37,24 @@ public:
 	
     int capacity() const;                           //String.capacity() returns STRING_SIZE - 1
     int length() const;                             //String.length() returns length of String
-    String substr(int start, int end) const;
-    int findChar(int start, char c);
+    String substr(int, int ) const;
+    int findChar(int, char);
+    int findstr(int, const String&);
     char& operator[] (int);                         //Accessor/Modifier
     char operator[] (int) const;                    //Accessor
     String operator+ (const String&) const;         //Concatenation
+    String operator+= (const String&);
+    String operator+=(const char cArr[]);
     bool operator== (const String&) const;
     bool operator< (const String&) const;
     bool operator<= (const String&) const;
-
+	
     friend std::istream& operator>>(std::istream&, String&);
     friend std::ostream& operator<<(std::ostream&, const String&);
 };
 
 String operator+ (const char[], const String&);
 String operator+ (char, const String&);
-String operator+= (const char[], const String&);
-String operator+= (char, const String&);
 bool operator== (const char[], const String&);
 bool operator== (char, const String&);
 bool operator< (const char[], const String&);

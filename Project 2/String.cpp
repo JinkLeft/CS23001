@@ -43,7 +43,7 @@ int String::length() const
 {
 	int i;
 
-	for (i = 0; i < STRING_SIZE; ++i)
+	for (i = 0; i < STRING_SIZE; i++)
 	{
 		if (str[i] == '\0')
 		{
@@ -95,6 +95,35 @@ int String::findChar(int start, char c)
 	return -1;
 }
 
+int String::findstr(int start, const String& rhs)
+{
+	if (start < 0)
+		start = 0;
+	if (start > length() - 1)
+		return -1;
+	
+	const auto rhsLength = rhs.length();
+	const auto lhsLength = length();
+	
+	for (auto i = 0; i < lhsLength; ++i)
+	{
+		String temp;
+		
+		if ((start + i) <= lhsLength)
+		{
+			temp = this->substr(start + i, rhsLength + i - 1);
+		}
+		
+		if (temp == rhs)
+		{
+
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 char& String::operator[](const int index)
 {
 	return str[index];
@@ -135,6 +164,45 @@ String String::operator+(const String& rhs) const
 	return temp;
 }
 
+String String::operator+=(const String& rhs)
+{
+	String temp;
+	const auto rhsLength = rhs.length();
+	const auto lhsLength = length();
+
+	for (auto i = 0; i < lhsLength; ++i)
+	{
+		temp.str[i] = str[i];
+	}
+
+	for (auto i = lhsLength, j = 0; i < STRING_SIZE - 2; ++i, ++j)
+	{
+		temp.str[i] = rhs.str[j];
+	}
+
+	const auto totalLength = (rhsLength + lhsLength);
+
+	if (totalLength < (STRING_SIZE - 1))
+	{
+		temp.str[totalLength] = '\0';
+	}
+	else if (totalLength > (STRING_SIZE - 1) || totalLength == (STRING_SIZE - 1))
+	{
+		temp.str[STRING_SIZE - 1] = '\0';
+	}
+	
+	*this = temp;
+	
+	return *this;
+}
+
+String String::operator+=(const char cArr[])
+{
+	String rhs = cArr;
+	*this = *this + rhs;
+	return *this;
+}
+
 bool String::operator==(const String& str2) const
 {
 	auto isEqual = true;
@@ -156,6 +224,7 @@ bool String::operator==(const String& str2) const
 		}
 	}
 
+	
 	return isEqual;
 }
 
@@ -169,12 +238,12 @@ bool String::operator<=(const String& str2) const
 	const auto len1 = length();
 	const auto len2 = str2.length();
 
-	if (len1 >= len2)
+	if (len1 > len2)
 		return false;
 
 	for (auto i = 0; i <= len2 - len1; i++)
 	{
-		if (substr(i, i + len1 - 1) == (*this))
+		if (substr(i, i + len2 - 1) == (*this))
 			return true;
 	}
 
@@ -345,15 +414,20 @@ bool operator> (const String& lhs, const String& rhs)
 
 }
 
+/*
 int main()
 {
-	const String s1('a');
+	const String s1("");
 	String s2("abc");
+	String s3("");
 	char cAr[] = "abc";
 	const auto c = 'a';
-
+	String s4 = "dog";
+	s4 += "a";
+	
 	std::cout << s1 << std::endl;
 	std::cout << s2 << std::endl;
+	std::cout << s4 << std::endl;
 
 	//std::cin >> s2;
 	std::cout << s2 << std::endl;
@@ -393,4 +467,14 @@ int main()
 	{
 		std::cout << "\n c != s1" << std::endl;
 	}
+
+	if (s3 == s1)
+	{
+		std::cout << "\n s3 == s1" << std::endl;
+	}
+	else
+	{
+		std::cout << "\n s3 != s1" << std::endl;
+	}
 }
+*/
