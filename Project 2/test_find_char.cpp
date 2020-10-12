@@ -18,7 +18,7 @@ int main()
 
 
         // TEST
-        int location = s1.findChar(0, 'd');
+        int location = s1.findch(0, 'd');
 
         // VERIFY
         assert(location == 0);
@@ -32,7 +32,7 @@ int main()
 
 
         // TEST
-        int location = s1.findChar(0, 'o');
+        int location = s1.findch(0, 'o');
 
         // VERIFY
         assert(location == 1);
@@ -46,7 +46,7 @@ int main()
 
 
         // TEST
-        int location = s1.findChar(0, 'g');
+        int location = s1.findch(0, 'g');
 
         // VERIFY
         assert(location == 2);
@@ -60,7 +60,7 @@ int main()
 
 
         // TEST
-        int location = s1.findChar(1, 'd');
+        int location = s1.findch(1, 'd');
 
         // VERIFY
         assert(location == -1);
@@ -74,7 +74,7 @@ int main()
 
 
         // TEST
-        int location = s1.findChar(1, 'o');
+        int location = s1.findch(1, 'o');
 
         // VERIFY
         assert(location == 1);
@@ -88,7 +88,7 @@ int main()
 
 
         // TEST
-        int location = s1.findChar(1, 'g');
+        int location = s1.findch(1, 'g');
 
         // VERIFY
         assert(location == 2);
@@ -102,12 +102,12 @@ int main()
 
 
         // TEST
-        int location = s1.findChar(0, 'a');
+        int location = s1.findch(0, 'a');
 
         // VERIFY
         assert(location == -1);
 
     }
-    std::cout << "Done testing findChar." << std::endl;
+    std::cout << "Done testing findch." << std::endl;
 }
 

@@ -59,10 +59,10 @@ int main()
 
         // TEST
         String s2 = s1.substr(12, 13);
-
+		std::cout << s2 << std::endl;
 
         // VERIFY
-        assert(s2 == "");
+        assert(s2 == "dog is a boy");
 
     }
     std::cout << "Done testing substring." << std::endl;

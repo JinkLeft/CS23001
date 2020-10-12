@@ -6,209 +6,221 @@
 */
 #include "string.hpp"
 
-String::String()
-{
+String::String(int size) {                                               //String(10) - capacity 10, empty string
+	stringSize = size;
+	str = new char[stringSize];
 	str[0] = '\0';
 }
 
-String::String(const char c)
+void String::resetCapacity(int newSize)
 {
+	const auto currentSize = stringSize;
+	
+	if (currentSize >= newSize)
+		return;
+
+	auto* str2 = new char[newSize];
+
+	for (auto i = 0; i < stringSize; i++)
+	{
+		str2[i] = str[i];
+	}
+
+	delete[] str;
+	
+	str = str2;
+}
+
+String::String(const int size, const char c[])
+{
+
+	stringSize = size + 1;
+	str = new char[stringSize];
+
+	for (auto j = 0; j < stringSize; ++j)
+	{
+		if (j != stringSize - 1)
+		{
+			str[j] = c[j];
+		}
+		else
+		{
+			str[j] = '\0';
+		}
+	}
+}
+
+
+//default ctor
+String::String()
+{
+	stringSize = 1;
+	str = new char[stringSize];
+	str[0] = '\0';
+}
+
+String::String(char c)
+{
+	stringSize = 2;
+	str = new char[stringSize];
+
 	str[0] = c;
 	str[1] = '\0';
 }
 
-String::String(const char cArr[])
+String::String(const char c[])
 {
-	auto i = 0;
-
-	for (i = 0; i < STRING_SIZE; ++i)
+	int i = 0;
+	while (c[i] != '\0')
 	{
-		str[i] = cArr[i];
+		++i;	
+	}
+	
+	stringSize = i + 1;
+	str = new char[stringSize];
 
-		if (cArr[i] == '\0')
-		{
-			break;
-		}
+	for (auto j = 0; j < stringSize; ++j)
+	{
+		str[j] = c[j];
+	}
+}
+
+String::String(const String& rhs)
+{
+	stringSize = rhs.stringSize;
+	str = new char[stringSize];
+
+	for(auto i = 0; i < stringSize; ++i)
+	{
+		str[i] = rhs.str[i];
+	}
+}
+
+String::~String()
+{
+	delete[] str;
+}
+
+void String::swap(String& rhs)
+{
+	//Swap the strings
+	char* temp = str;
+	str = rhs.str;
+	rhs.str = temp;
+
+	//Swap the size
+	const auto size = stringSize;
+	stringSize = rhs.stringSize;
+	rhs.stringSize = size;
+}
+
+String& String::operator=(String rhs)
+{
+	if (str != nullptr)
+		delete[] str;
+
+	str = nullptr;
+
+	stringSize = rhs.stringSize;
+
+	str = new char[stringSize];
+
+	for (auto i = 0; i < stringSize; ++i)
+	{
+		str[i] = rhs.str[i];
 	}
 
-	str[i] = '\0';
+	return *this;
+}
+
+char& String::operator[](int index)
+{
+	return str[index];
+}
+
+char String::operator[](int index) const
+{
+	return str[index];
 }
 
 int String::capacity() const
 {
-	return STRING_SIZE - 1;
+	return stringSize - 1;
 }
 
 int String::length() const
 {
-	int i;
-
-	for (i = 0; i < STRING_SIZE; i++)
+	auto length = 0;
+	for(auto i = 0; i < stringSize; ++i)
 	{
-		if (str[i] == '\0')
+		if(str[i] == '\0')
 		{
-			break;
+			length = i;
+			return length;
 		}
 	}
 
-	return i;
+	return length;
 }
 
-String String::substr(int start, int end) const
-{
-	if (start < 0)
-		start = 0;
-	if (start > length())
-		return String();
-	if (start > end)
-		return String();
-	if (end >= length())
-		end = length() - 1;
-
-	String rlt;
-	int i;
-
-	for (i = start; i <= end; i++)
-	{
-		rlt.str[i - start] = str[i];
-	}
-
-	rlt.str[i - start] = '\0';
-
-	return rlt;
-}
-
-int String::findChar(int start, char c)
-{
-	if (start < 0)
-		start = 0;
-	if (start > length() - 1)
-		return -1;
-
-	const auto len = length();
-	for (auto i = start; i < len; i++)
-	{
-		if (str[i] == c)
-			return i;
-	}
-
-	return -1;
-}
-
-int String::findstr(int start, const String& rhs)
-{
-	if (start < 0)
-		start = 0;
-	if (start > length() - 1)
-		return -1;
-	
-	const auto rhsLength = rhs.length();
-	const auto lhsLength = length();
-	
-	for (auto i = 0; i < lhsLength; ++i)
-	{
-		String temp;
-		
-		if ((start + i) <= lhsLength)
-		{
-			temp = this->substr(start + i, rhsLength + i - 1);
-		}
-		
-		if (temp == rhs)
-		{
-
-			return i;
-		}
-	}
-
-	return -1;
-}
-
-char& String::operator[](const int index)
-{
-	return str[index];
-}
-
-char String::operator[](const int index) const
-{
-	return str[index];
-}
-
+ 
 String String::operator+(const String& rhs) const
 {
-	String temp;
-	const auto rhsLength = rhs.length();
-	const auto lhsLength = length();
 
-	for (auto i = 0; i < lhsLength; ++i)
-	{
-		temp.str[i] = str[i];
-	}
+	const auto lhsSizeOffset = stringSize - 1;
+	const auto rhsSize = rhs.stringSize - 1;
+	const auto totalSize = lhsSizeOffset + rhsSize;
 
-	for (auto i = lhsLength, j = 0; i < STRING_SIZE - 2; ++i, ++j)
+	String temp(totalSize + 1);
+	
+	for(auto i = 0; i < totalSize; ++i)
 	{
-		temp.str[i] = rhs.str[j];
+		if (i < lhsSizeOffset)
+		{
+			temp.str[i] = str[i];
+		}
+		if(i >= lhsSizeOffset && i < totalSize)
+		{
+			temp.str[i] = rhs.str[i - lhsSizeOffset];
+		}
+		
 	}
-
-	const auto totalLength = (rhsLength + lhsLength);
-
-	if (totalLength < (STRING_SIZE - 1))
-	{
-		temp.str[totalLength] = '\0';
-	}
-	else if (totalLength > (STRING_SIZE - 1) || totalLength == (STRING_SIZE - 1))
-	{
-		temp.str[STRING_SIZE - 1] = '\0';
-	}
+	
+	temp.str[totalSize] = '\0';
 
 	return temp;
 }
 
-String String::operator+=(const String& rhs)
+String& String::operator+=(const String& rhs)
 {
-	String temp;
-	const auto rhsLength = rhs.length();
-	const auto lhsLength = length();
+	const auto lhsSizeOffset = stringSize - 1;
+	const auto rhsSize = rhs.stringSize - 1;
+	const auto totalSize = lhsSizeOffset + rhsSize;
 
-	for (auto i = 0; i < lhsLength; ++i)
+	String temp(totalSize + 1);
+	
+	for (auto i = 0; i < lhsSizeOffset; ++i)
 	{
 		temp.str[i] = str[i];
 	}
 
-	for (auto i = lhsLength, j = 0; i < STRING_SIZE - 2; ++i, ++j)
+	for (auto i = lhsSizeOffset, j = 0; i < totalSize; ++i, ++j)
 	{
 		temp.str[i] = rhs.str[j];
 	}
+	temp.str[totalSize] = '\0';
 
-	const auto totalLength = (rhsLength + lhsLength);
-
-	if (totalLength < (STRING_SIZE - 1))
-	{
-		temp.str[totalLength] = '\0';
-	}
-	else if (totalLength > (STRING_SIZE - 1) || totalLength == (STRING_SIZE - 1))
-	{
-		temp.str[STRING_SIZE - 1] = '\0';
-	}
-	
 	*this = temp;
-	
+
 	return *this;
 }
 
-String String::operator+=(const char cArr[])
-{
-	String rhs = cArr;
-	*this = *this + rhs;
-	return *this;
-}
-
-bool String::operator==(const String& str2) const
+bool String::operator==(const String& rhs) const
 {
 	auto isEqual = true;
 	const auto len1 = length();
-	const auto len2 = str2.length();
-
+	const auto len2 = rhs.length();
+	
 	if (len1 != len2)
 	{
 		isEqual = false;
@@ -218,263 +230,337 @@ bool String::operator==(const String& str2) const
 
 	for (auto i = 0; i < len1; ++i)
 	{
-		if (str[i] != str2.str[i])
+		if (str[i] != rhs.str[i])
 		{
 			isEqual = false;
 		}
 	}
 
-	
+	//std::cout << "\n" << *this << " compare " << rhs << std::endl;
 	return isEqual;
 }
 
-bool String::operator<(const String& str2) const
+bool String::operator<(const String& rhs) const
 {
-	return (*this <= str2 && !(*this == str2));
-}
-
-bool String::operator<=(const String& str2) const
-{
-	const auto len1 = length();
-	const auto len2 = str2.length();
-
-	if (len1 > len2)
-		return false;
-
-	for (auto i = 0; i <= len2 - len1; i++)
-	{
-		if (substr(i, i + len2 - 1) == (*this))
-			return true;
-	}
-
-	return false;
-}
-
-std::istream& operator>>(std::istream& in, String& s)
-{
-	/* COMMENTED OUT UNTIL CLARIFICATION FOR HOW THE ASSIGNMENT SHOULD BE DONE
-	char c;
 	auto i = 0;
-
-	while (!in.eof())
-	{
-		in >> c;
-		if (c == '\n' || c == '\0' || c == ';')
-		{
-			break;
-		}
-		s.str[i] = c;
-		i++;
-	}
-
-	s.str[i] = '\0';
-	*/
+	while ((str[i] != 0) && (rhs.str[i] != 0) && (str[i] == rhs.str[i])) 
+		++i;
 	
-	char temp[STRING_SIZE];
+	return str[i] < rhs.str[i];
+}
+
+String String::substr(int start, int end) const
+{
+	if (start < 0)
+	{
+		return *this;
+	}
+	if (start > end)
+	{
+		return String();
+	}
+
+	if (end >= length())
+	{
+		return *this;
+	}
+
+	String result;
+
+	auto i = start;
+
+	while (i <= end) {
+
+		result += str[i];
+
+		++i;
+
+	}
+
+	String* k = new String(result);
+
+	return *k;
+	
+}
+
+int String::findch(int start, char c) const
+{
+	if (start < 0)
+		start = 0;
+	if (start > stringSize - 1)
+		return -1;
+
+	const auto len = stringSize;
+	for (auto i = start; i < len; i++)
+	{
+		if (str[i] == c)
+			return i;
+	}
+
+	return -1;
+}
+
+int String::findstr(int start, const String& rhs) const
+{
+
+	if (start < 0)
+		start = 0;
+
+	if (start > length())
+		return -1;
+
+	if (length() < rhs.length())
+		return -1;
+	
+	int i = start;
+
+	while ((str[start] != 0) && (rhs.length() + start - 1 <= length()) && (i < stringSize)) 
+	{
+
+		if (rhs == substr(i, i + rhs.length() - 1))
+		{
+			return i;
+		}
+
+		++i;
+	}
+	
+	return -1;
+}
+
+
+
+std::ostream& operator<<(std::ostream& out, const String& string)
+{
+	out << string.str;
+
+	return out;
+}
+
+std::istream& operator>> (std::istream& in, String& newString)
+{
+	char temp[1000];
+	
 	in >> temp;
-	if (s.length() == 0)
-	{
-		s = String(temp);
-	}
-	else
-	{
-		s = s + String(temp);
-	}
+	
+	newString = String(temp);
 	
 	return in;
 }
 
-std::ostream& operator<<(std::ostream& out, const String& s)
+String operator+(const char c[], const String& rhs)
 {
-	out << s.str;
-	return out;
+	String lhs(c);
+
+	lhs += rhs;
+
+	return lhs;
 }
 
-String operator+(const char cArr[], const String& rhs)
+String operator+(const char c, const String& rhs)
 {
-	return String(cArr) + rhs;
+	String lhs(c);
+
+	lhs += rhs;
+
+	return lhs;
 }
 
-String operator+(char c, const String& rhs)
+bool operator==(const char c[], const String& rhs)
 {
-	return String(c) + rhs;
+	const String lhs(c);
+
+	return (lhs == rhs);
 }
 
-bool operator== (const char cArr[], const String& rhs)
+bool operator==(const char c, const String& rhs)
 {
-	auto lhs = String(cArr);
-	auto isEqual = true;
+	const String lhs(c);
 
-	if (lhs.length() != rhs.length())
-	{
-		isEqual = false;
-		return isEqual;
-	}
-
-	for (auto i = 0; i < lhs.length(); ++i)
-	{
-		if (lhs[i] != rhs[i])
-		{
-			isEqual = false;
-		}
-	}
-
-	return isEqual;
+	return (lhs == rhs);
 }
 
-bool operator== (const char c, const String& rhs)
+bool operator<(const char c[], const String& rhs)
 {
-	auto lhs = String(c);
-	auto isEqual = true;
+	const String lhs(c);
 
-	if (lhs.length() != rhs.length())
-	{
-		isEqual = false;
-		return isEqual;
-	}
-
-	for (auto i = 0; i < lhs.length(); ++i)
-	{
-		if (lhs[i] != rhs[i])
-		{
-			isEqual = false;
-		}
-	}
-
-	return isEqual;
+	return (lhs < rhs);
 }
 
-bool operator< (const char cArr[], const String& rhs)
+bool operator<(char c, const String& rhs)
 {
-	const auto lhs = String(cArr);
+	const String lhs(c);
 
-	return !(lhs > rhs);
+	return (lhs < rhs);
 }
 
-
-bool operator< (char c, const String& rhs)
+bool operator<=(const String& lhs, const String& rhs)
 {
-	const auto lhs = String(c);
-
-	return !(lhs > rhs);
+	return (lhs < rhs) || (lhs == rhs);
 }
 
-bool operator!= (const String& lhs, const String& rhs)
+bool operator!=(const String& lhs, const String& rhs)
 {
-	if(lhs == rhs)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
+	return !(lhs == rhs);
 }
 
-
-bool operator>= (const String& lhs, const String& rhs)
+bool operator>=(const String& lhs, const String& rhs)
 {
-	if(lhs > rhs || lhs == rhs)
-	{
-		return true;
-	}
-
-	return false;
+	return (rhs <= lhs);
 }
 
-bool operator> (const String& lhs, const String& rhs)
+bool operator>(const String& lhs, const String& rhs)
 {
-	auto totalL = 0;
-	auto totalR = 0;
-	const auto lhsLength = lhs.length();
-	const auto rhsLength = rhs.length();
-
-	for(auto i = 0; i < lhsLength; ++i)
-	{
-		totalL += static_cast<int>(lhs[i]);
-		if(lhs[i] == '\0')
-		{
-			break;
-		}
-	}
-
-	for(auto i = 0; i < rhsLength; ++i)
-	{
-		totalR += static_cast<int>(rhs[i]);
-		if(rhs[i] == '\0')
-		{
-			break;
-		}
-	}
-	
-	if (totalL > totalR)
-		return true;
-	else
-		return false;
-
+	return !(lhs < rhs);
 }
 
 /*
 int main()
 {
-	const String s1("");
-	String s2("abc");
-	String s3("");
-	char cAr[] = "abc";
-	const auto c = 'a';
-	String s4 = "dog";
-	s4 += "a";
+	String s1("abc");
+	String s2("def");
+	String s3("dog");
+	String s4("dog");
+	String s5("d");
+	String s6("ab");
 	
-	std::cout << s1 << std::endl;
-	std::cout << s2 << std::endl;
-	std::cout << s4 << std::endl;
+	std::cout << "----------------------------" << std::endl;
+	std::cout << "s1: " << s1 << std::endl;
+	std::cout << "s2: " << s2 << std::endl;
+	std::cout << "s1: " << s3 << std::endl;
+	std::cout << "s2: " << s4 << std::endl;
+	std::cout << "s1: " << s5 << std::endl;
+	std::cout << "s2: " << s6 << std::endl;
+	std::cout << "----------------------------" << std::endl;
 
-	//std::cin >> s2;
-	std::cout << s2 << std::endl;
+	s1.swap(s2);
+	std::cout << "----------------------------" << std::endl;
+	std::cout << "s1 swap with s2" << std::endl;
+	std::cout << "s1: " << s1 << std::endl;
 
-	if (s1 > s2)
+	std::cout << "----------------------------" << std::endl;
+
+	s1 = "abc";
+	std::cout << "----------------------------" << std::endl;
+	std::cout << "s1 = \"abc\""  << std::endl;
+	std::cout << "s1: " << s1 << std::endl;
+
+	std::cout << "----------------------------" << std::endl;
+
+	s1 = s1 + s2;
+	std::cout << "----------------------------" << std::endl;
+	std::cout << "s1 = s1 + s2: "<< std::endl;
+	std::cout << "s1: " << s1 << std::endl;
+	std::cout << "----------------------------" << std::endl;
+	
+	s1 += s2;
+	std::cout << "----------------------------" << std::endl;
+	std::cout << "s1 += s2: " << s1 << std::endl;
+	std::cout << "----------------------------" << std::endl;
+
+	std::cout << "----------------------------" << std::endl;
+	std::cout << "s1 += s2: " << s1 << std::endl;
+	std::cout << "----------------------------" << std::endl;
+
+	std::cout << "----------------------------" << std::endl;
+	if (s3 == s4)
 	{
-		std::cout << "\n s1 > s2" << std::endl;
+		std::cout << s3 << " == " << s4 << std::endl;
 	}
 	else
 	{
-		std::cout << "\n s1 < s2" << std::endl;
+		std::cout << s3 << " != " << s4 << std::endl;
 	}
 	
-	if (cAr != s2)
+	if (s1 == s4)
 	{
-		std::cout << "\n cAr != s2" << std::endl;
+		std::cout << s1 << " == " << s4 << std::endl;
 	}
 	else
 	{
-		std::cout << "\n cAr == s2" << std::endl;
+		std::cout << s1 << " != " << s4 << std::endl;
 	}
+	std::cout << "----------------------------" << std::endl;
+
+	std::cout << "----------------------------" << std::endl;
+	if (s3 != s4)
+	{
+		std::cout << s3 << " != " << s4 << std::endl;
+	}
+	else
+	{
+		std::cout << s3 << " == " << s4 << std::endl;
+	}
+
+	if (s1 != s4)
+	{
+		std::cout << s1 << " != " << s4 << std::endl;
+	}
+	else
+	{
+		std::cout << s1 << " == " << s4 << std::endl;
+	}
+	std::cout << "----------------------------" << std::endl;
 	
-	if (s1 != s2)
+	std::cout << "----------------------------" << std::endl;
+	if (s3 <= s4)
 	{
-		std::cout << "\n s1 != s2" << std::endl;
+		std::cout << s3 << " <= " << s4 << std::endl;
 	}
 	else
 	{
-		std::cout << "\n s1 == s2" << std::endl;
+		std::cout << s3 << " !<= " << s4 << std::endl;
 	}
 
-	if (c == s1)
+	if (s1 <= s4)
 	{
-		std::cout << "\n c == s1" << std::endl;
+		std::cout << s1 << " <= " << s4 << std::endl;
 	}
 	else
 	{
-		std::cout << "\n c != s1" << std::endl;
+		std::cout << s1 << " !<= " << s4 << std::endl;
+	}
+	std::cout << "----------------------------" << std::endl;
+
+	std::cout << "----------------------------" << std::endl;
+	if (s3 >= s4)
+	{
+		std::cout << s3 << " >= " << s4 << std::endl;
+	}
+	else
+	{
+		std::cout << s3 << " !>= " << s4 << std::endl;
 	}
 
-	if (s3 == s1)
+	if (s1 >= s4)
 	{
-		std::cout << "\n s3 == s1" << std::endl;
+		std::cout << s1 << " >= " << s4 << std::endl;
 	}
 	else
 	{
-		std::cout << "\n s3 != s1" << std::endl;
+		std::cout << s1 << " !>= " << s4 << std::endl;
 	}
+	std::cout << "----------------------------" << std::endl;
+
+	std::cout << "----------------------------" << std::endl;
+	if (s5 < s6)
+	{
+		std::cout << s5 << " < " << s6 << std::endl;
+	}
+	else
+	{
+		std::cout << s5 << " > " << s6 << std::endl;
+	}
+
+	if (s1 < s2)
+	{
+		std::cout << s1 << " < " << s2 << std::endl;
+	}
+	else
+	{
+		std::cout << s1 << " > " << s2 << std::endl;
+	}
+	std::cout << "----------------------------" << std::endl;
+
 }
 */

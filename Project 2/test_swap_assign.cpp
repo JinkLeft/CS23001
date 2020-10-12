@@ -1,6 +1,6 @@
 //  String class test program
 //
-//  Tests: testing the subscript operator Str[i]
+//  Tests: Char array Ctor
 //
 
 #include "string.hpp"
@@ -13,59 +13,63 @@ int main()
     {
         //------------------------------------------------------
         // SETUP FIXTURE
-        String s1("dog");
-
-
-        // TEST
-        int len = s1.length();
-        int cap = s1.capacity();
-
-        // VERIFY
-        assert(len == 3);
-        assert(cap == 3);
-    }
-    {
-        //------------------------------------------------------
-        // SETUP FIXTURE
-        String s1("dog1");
-
+        String s1("abc");
+        String s2("");
 
         // TEST
-        int len = s1.length();
-        int cap = s1.capacity();
+		s1.swap(s2);
 
         // VERIFY
-        assert(len == 4);
-        assert(cap == 4);
+        assert(s1 == "");
     }
-    {
-        //------------------------------------------------------
-        // SETUP FIXTURE
-        String s1("dog12");
-
-
-        // TEST
-        int len = s1.length();
-        int cap = s1.capacity();
-
-        // VERIFY
-        assert(len == 5);
-        assert(cap == 5);
-    }
-    {
+	{
         //------------------------------------------------------
         // SETUP FIXTURE
         String s1("");
-
+        String s2("abc");
 
         // TEST
-        int len = s1.length();
-        int cap = s1.capacity();
-
+		s1.swap(s2);
+		
         // VERIFY
-        assert(len == 0);
-        assert(cap == 0);
+        assert(s1 == "abc");
     }
-    std::cout << "Done testing length and capacity." << std::endl;
-}
+	{
+        //------------------------------------------------------
+        // SETUP FIXTURE
+        String s1("");
+        String s2("");
 
+        // TEST
+		s1.swap(s2);
+		
+        // VERIFY
+        assert(s1 == "");
+    }
+	{
+        //------------------------------------------------------
+        // SETUP FIXTURE
+        String s1("abc");
+        String s2("abc");
+
+        // TEST
+		s1.swap(s2);
+		
+        // VERIFY
+        assert(s1 == "abc");
+    }
+		{
+        //------------------------------------------------------
+        // SETUP FIXTURE
+        String s1("def");
+        String s2("abc");
+
+        // TEST
+		s1.swap(s2);
+		
+        // VERIFY
+        assert(s1 == "abc");
+    }
+    std::cout << "Done testing swap assign." << std::endl;
+
+}
