@@ -20,6 +20,7 @@
 #define CS23001_STRING_INTERFACE_HPP
 
 #include <iostream>
+#include <vector>
 
 
 ////////////////////////////////////////////////////
@@ -40,8 +41,12 @@ public:
     String(char);                               //String('x')
     String(const char[]);                       //String("abc")
     String(const String&);                      //Copy Constructor
+    String(const String&, int);                 //Copy Constructor set to a new capacity
     ~String();                                  //Destructor
     void swap(String&);                         //Constant time swap
+	std::vector<String> split(char) const;      //
+    void resizeCapacity(const int);             //Resize a String public member
+    int toInt();                                //s.toInt() returns String number as Ints
 	
     String& operator= (String);                 //Assignment Copy
     char&   operator[] (int);                   //Accessor/Modifier

@@ -96,6 +96,20 @@ String::String(const String& rhs)
 	}
 }
 
+String::String(const String& rhs, const int cap)
+{
+	stringSize = rhs.stringSize;
+	str = new char[cap];
+	auto i = 0;
+	
+	for (; i < stringSize; ++i)
+	{
+		str[i] = rhs.str[i];
+	}
+
+	str[i] = '\0';
+}
+
 String::~String()
 {
 	delete[] str;
@@ -112,6 +126,57 @@ void String::swap(String& rhs)
 	const auto size = stringSize;
 	stringSize = rhs.stringSize;
 	rhs.stringSize = size;
+}
+
+//REQUIRES: findch() std::vector<> substr() length()
+// 
+// s = "-a--b-", then s.split('-') returns a vector with five strings: { "", "a", "", "b", "" }, three of which are empty string.
+// 
+std::vector<String> String::split(char sepChar) const
+{
+	int start = 0;
+	int end = findch(start, sepChar);
+	std::vector<String> splits;
+
+	while (end != -1)
+	{
+		splits.push_back(substr(start, end - 1));
+		start = end + 1;
+		end = findch(start, sepChar);
+	}
+
+	if (start <= length())
+	{
+		splits.push_back(substr(start, length() - 1));
+	}
+
+	return splits;
+}
+
+void String::resizeCapacity(const int size)
+{
+	String temp(*this, size);
+	swap(temp);
+}
+
+int String::toInt()
+{
+	int start = length() - 1;
+
+	if (str[start] == '-')
+		return 0;
+	
+	int newInt = 0;
+	int carry = 1;
+
+	for (int i = start; i >= 0; --i)
+	{
+		newInt += (int(str[i] - int('0')) * carry);
+		carry *= 10;
+	}
+
+	return newInt;
+	
 }
 
 String& String::operator=(String rhs)
@@ -300,6 +365,7 @@ int String::findch(int start, char c) const
 	return -1;
 }
 
+//REQUIRES: length() substr()
 int String::findstr(int start, const String& rhs) const
 {
 
@@ -414,8 +480,21 @@ bool operator>(const String& lhs, const String& rhs)
 	return !(lhs < rhs);
 }
 
-/*
-int main()
+void print(std::vector<String> const& a) {
+	std::cout << "The vector elements are : " << std::endl;
+	std::cout << "{ ";
+	
+	for (unsigned long i = 0; i < a.size(); i++)
+		if (i < a.size() -1)
+			std::cout << "\"" << a.at(i) << "\", ";
+		else
+			std::cout << "\"" << a.at(i) << "\"";
+
+
+	std::cout << " } " << std::endl;
+}
+
+void DebugPrint()
 {
 	String s1("abc");
 	String s2("def");
@@ -442,17 +521,17 @@ int main()
 
 	s1 = "abc";
 	std::cout << "----------------------------" << std::endl;
-	std::cout << "s1 = \"abc\""  << std::endl;
+	std::cout << "s1 = \"abc\"" << std::endl;
 	std::cout << "s1: " << s1 << std::endl;
 
 	std::cout << "----------------------------" << std::endl;
 
 	s1 = s1 + s2;
 	std::cout << "----------------------------" << std::endl;
-	std::cout << "s1 = s1 + s2: "<< std::endl;
+	std::cout << "s1 = s1 + s2: " << std::endl;
 	std::cout << "s1: " << s1 << std::endl;
 	std::cout << "----------------------------" << std::endl;
-	
+
 	s1 += s2;
 	std::cout << "----------------------------" << std::endl;
 	std::cout << "s1 += s2: " << s1 << std::endl;
@@ -463,6 +542,7 @@ int main()
 	std::cout << "----------------------------" << std::endl;
 
 	std::cout << "----------------------------" << std::endl;
+	
 	if (s3 == s4)
 	{
 		std::cout << s3 << " == " << s4 << std::endl;
@@ -471,7 +551,7 @@ int main()
 	{
 		std::cout << s3 << " != " << s4 << std::endl;
 	}
-	
+
 	if (s1 == s4)
 	{
 		std::cout << s1 << " == " << s4 << std::endl;
@@ -501,7 +581,7 @@ int main()
 		std::cout << s1 << " == " << s4 << std::endl;
 	}
 	std::cout << "----------------------------" << std::endl;
-	
+
 	std::cout << "----------------------------" << std::endl;
 	if (s3 <= s4)
 	{
@@ -562,5 +642,19 @@ int main()
 	}
 	std::cout << "----------------------------" << std::endl;
 
+	std::cout << "----------------------------" << std::endl;
+	String s7 = "abc ef gh";
+	std::vector<String> s8 = s7.split(' ');
+	print(s8);
+	s7 = "-a--b-";
+	s8 = s7.split('-');
+	print(s8);
+	std::cout << "----------------------------" << std::endl;
+}
+
+/*
+int main()
+{
+	DebugPrint();
 }
 */
