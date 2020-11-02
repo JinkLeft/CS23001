@@ -59,8 +59,8 @@ test_%.o: string.hpp string.cpp stack.hpp test_%.cpp
 tests: stack.hpp string.hpp string.cpp ${STACK_TESTS}
 	./test_ctor_default
 	./test_push_pop
-#	./test_assign
-#	./test_ctor_copy
+	./test_assign
+	./test_ctor_copy
 #   ./test_dtor
 
 
