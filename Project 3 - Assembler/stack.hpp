@@ -13,8 +13,9 @@
 //
 
 #include <new>
+#include <iostream>
 #include <cassert>
-//P3M1 COMPLETE
+//P3M3 COMPLETED
 ////////////////////////////////////////////////////////////////////////////
 //           
 template<typename T> 
@@ -23,7 +24,7 @@ public:
 	Node(): data(), next(0) {};						// Default constructor for node
 	Node(const T& item): data(item), next(0) {};	// Node constructor for element with data
 	T data;											// Data container for node
-	Node<T> *next;									// Node's pointer to the next element
+	Node<T>* next;									// Node's pointer to the next element
 	
 };
 
@@ -174,6 +175,7 @@ void stack<T>::push(const T& item)
 	temp->next = tos;
 
 	tos = temp;
+	
 	++length;
 }
 #endif
